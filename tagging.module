@@ -197,11 +197,26 @@ function theme_tagging_suggestions_list($suggestions, $vid) {
       $title = t('Add this already existing tag');
       $class = 'tagging-suggest-tag';
       if(array_key_exists('#new',$term) && $term['#new'] == TRUE) {
-	$class .= ' tagging-suggestion-new';
+	    $class .= ' tagging-suggestion-new';
         $title = t('Add this new tag');
       }
-      $term = "<span id='tagging-$vid' class='{$class}'>"._tagging_check_tag($term['#name'])."</span>";
-      $link = l($term, '', array('html' => true, 'attributes' => array('title' =>$title )));
+      if(!empty($term['#origin'])) {
+        $origin =  strtolower($term['#origin']);
+        $class .= " origin-$origin";
+      }
+
+      $tagName = $term['#name'];
+      // Remove default attributes from Term array. So we know that all others in the array are optional tagging specific attributes.
+      unset ($term["#name"], $term["#weight"]);
+      if(count($term)>0) {
+          $dataAttributes = "";
+        foreach($term as $key => $value) {
+          $dataAttributes .= 'data-'.substr($key, 1).'="'.$value.'"';
+        }
+      }
+        
+      $tag = "<span $dataAttributes id='tagging-$vid' class='{$class}'>"._tagging_check_tag($tagName)."</span>";
+      $link = l($tag, '', array('html' => true, 'attributes' => array('title' =>$title )));
       $suggested_tags .= $link;
     }
     // If we have any suggestions, then place the wrapper.
@@ -211,7 +226,7 @@ function theme_tagging_suggestions_list($suggestions, $vid) {
     }
     else {
        return "<div class='tagging-suggestions-wrapper tagging-suggestions-wrapper-$vid'><label>"
-                                . t('Suggestions') . ":</label>". t('No suggestions') ."</div>";
+                                . t('Suggestions') . ":</label><em>". t('no suggestions') ."</em></div>";
     }
 }
 
