@@ -209,8 +209,10 @@ function theme_tagging_suggestions_list($suggestions, $vid) {
       return "<div class='tagging-suggestions-wrapper tagging-suggestions-wrapper-$vid'><label>"
                                 . t('Suggestions') . ":</label>$suggested_tags</div>";
     }
-    // We have no suggestions, so no need to show any output
-    return '';
+    else {
+       return "<div class='tagging-suggestions-wrapper tagging-suggestions-wrapper-$vid'><label>"
+                                . t('Suggestions') . ":</label>". t('No suggestions') ."</div>";
+    }
 }
 
 /**
